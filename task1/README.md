@@ -76,9 +76,9 @@ To do this, run `minikube service list`. The output will be something like:
 You need the line with `http2/80`. In our case, the address is `http://192.168.49.2:30622`.
 
 #### Query
-Let's query this address. `/cat/1` endpoint is hard-coded in nginx, so the query shall look like this:
+Let's query this address. `/facts/cat/1` endpoint is hard-coded in nginx, so the query shall look like this:
 ```bash
-curl http://192.168.49.2:30622/cat/1
+curl http://192.168.49.2:30622/facts/cat/1
 
 {"status":{"verified":null,"sentCount":0},"_id":"627410aba659431711fd5ba9","user":"6268ea344514425908fd37c8","text":"Новый факт о кошках, придумай сам ага.","type":"cat","deleted":false,"createdAt":"2022-05-05T18:00:11.882Z","updatedAt":"2022-05-05T18:00:11.882Z","__v":0}
 ```
