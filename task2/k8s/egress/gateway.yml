@@ -1,0 +1,60 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: api-egressgateway
+spec:
+  selector:
+    app: istio-egressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - cat-fact.herokuapp.com
+      tls:
+        mode: PASSTHROUGH
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: api-through-egress-gateway
+spec:
+  hosts:
+    - cat-fact.herokuapp.com
+  gateways:
+    - mesh
+    - api-egressgateway
+  http:
+    - match:
+        - gateways:
+            - mesh
+          port: 80
+      route:
+        - destination:
+            host: istio-egressgateway.istio-system.svc.cluster.local
+            port:
+              number: 80
+    - match:
+        - gateways:
+            - api-egressgateway
+          port: 80
+      route:
+        - destination:
+            host: cat-fact.herokuapp.com
+            port:
+              number: 80
+          weight: 100
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: api
+spec:
+  hosts:
+    - cat-fact.herokuapp.com
+  ports:
+    - number: 80
+      name: http-port
+      protocol: HTTP
+  resolution: DNS
